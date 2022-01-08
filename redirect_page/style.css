@@ -1,0 +1,19 @@
+body {
+    background-color: rgb(11, 17, 36);
+    color: rgba(255, 255, 255, 0.829);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+.message_box {
+    background-color: rgb(16, 25, 53);
+    text-align: center;
+    width: 20%;
+    height: 10vh;
+    border: rgba(255, 255, 255, 0.541) solid 1px;
+    border-radius: 7.5px;
+}
