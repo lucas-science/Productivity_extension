@@ -11,8 +11,9 @@ let domain = new URL(url);
 
 console.log(domain.origin)
 
-if (domain.origin == "https://www.ydazdoutube.com") {
-    console.log("parrrrrrrrrrrrrtttttttttttt")
+if (domain.origin == "https://www.youtube.com") {
+    setInterval(() => {
+        window.location.replace("http://www.w3schools.com");
+    }, 10000)
 
-    window.location.replace("http://www.w3schools.com");
 }
