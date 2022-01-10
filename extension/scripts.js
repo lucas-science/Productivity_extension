@@ -7,10 +7,13 @@ const newnode_box = document.getElementById('newnode_box');
 const form_url = document.getElementById('form_url');
 const form_time = document.getElementById('form_time');
 
-let node_items = []
+let items = []
+
+/* Listeners */
 
 content.addEventListener('click', (e) => {
     console.log(e.path[0].name)
+    deleteNode(e.path[0].name, items)
 })
 
 NewNodeButton.addEventListener('click', () => {
@@ -26,8 +29,22 @@ CreateNodeButton.addEventListener('click', () => {
     form_time.value = 0
     newnode_box.style.display = "none"
 
-    const InsertAndGetItemsStorage = new Promise(function(resolv, reject) {
-        chrome.storage.local.get('list', function(data) {
+    InsertAndGetItemsStorage(node, 'list')
+})
+
+chrome.storage.onChanged.addListener(function(changes, namespace) {
+    items = changes.list.newValue
+    CreateNode(items) // print modifications
+});
+
+/**
+ * Insert Data in local storage
+ * @param {*} node 
+ * @returns Promise of data inserted
+ */
+const InsertAndGetItemsStorage = (node, name) => {
+    return new Promise(function(resolv, reject) {
+        chrome.storage.local.get(name, function(data) {
             update(data.list, node);
         });
 
@@ -43,59 +60,56 @@ CreateNodeButton.addEventListener('click', () => {
             });
         }
     });
+}
 
-    InsertAndGetItemsStorage.then((val) => {
-        /*
-        while (document.getElementById('content').firstChild) {
-            div.removeChild(document.getElementById('content').firstChild);
-        }*/
-        for (let i in val) {
-            console.log(val[i]);
-            const div = document.createElement('div');
-            div.className = "item"
-            div.innerHTML = `
-                <p>${val[i].url}</p>
-                <p>${val[i].time}</p>
-                <button name="${i}">X</button>
-            `;
-            document.getElementById('content').appendChild(div);
-        }
-    })
-})
-
-
-
+/**
+ * Get list of data stored in local storage
+ * @param {*} name 
+ * @returns 
+ */
 const getItemStorage = (name) => {
     return new Promise(function(resolv, reject) {
         chrome.storage.local.get(name, function(data) {
-            let val = data.list;
-
-            for (let i in val) {
-                const div = document.createElement('div');
-                div.className = "item"
-                div.innerHTML = `
-                    <p>${val[i].url}</p>
-                    <p>${val[i].time}</p>
-                    <button name="${i}">X</button>
-                `;
-                document.getElementById('content').appendChild(div);
-            }
+            resolv(data.list)
         });
     })
 }
 
+/**
+ * Print items inside the div
+ * @param {*} item 
+ */
+const CreateNode = (item) => {
+    document.getElementById('content').innerHTML = "";
+    for (let i in item) {
+        const div = document.createElement('div');
+        div.className = "item"
+        div.innerHTML = `
+            <p>${item[i].url}</p>
+            <p>${item[i].time}</p>
+            <button name="${i}">X</button>
+        `;
+        document.getElementById('content').appendChild(div);
+    }
+}
 
-getItemStorage('list').then((val) => {
+/**
+ * Delete an item with its index
+ * @param {*} index 
+ * @param {*} items 
+ */
+const deleteNode = (index, items) => {
+    items.splice(index, 1)
+    chrome.storage.local.set({
+        list: items
+    }, () => {
+        chrome.storage.local.get('list', function(data) {
+            console.log("value deleted", data.list)
+        });
+    });
+}
 
+getItemStorage('list').then(item => {
+    items = item
+    CreateNode(item)
 })
-
-/*
-document.getElementById('bouton').onclick = function() {
-    chrome.storage.local.set({ test: "test" }, function() {
-        alert("sucess")
-    });
-
-    chrome.storage.local.get('test', function(result) {
-        alert(result.test);
-    });
-}*/
