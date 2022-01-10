@@ -28,7 +28,6 @@ CreateNodeButton.addEventListener('click', () => {
     form_url.value = ""
     form_time.value = 0
     newnode_box.style.display = "none"
-
     InsertAndGetItemsStorage(node, 'list')
 })
 
@@ -52,11 +51,10 @@ const InsertAndGetItemsStorage = (node, name) => {
             array.push(val);
             chrome.storage.local.set({
                 list: array
-            }, function() {
+            }, async() => {
                 console.log("added to list with new values");
-                chrome.storage.local.get('list', function(data) {
-                    resolv(data.list)
-                });
+                let data = await getItemStorage('list')
+                resolv(data)
             });
         }
     });
@@ -104,11 +102,12 @@ const deleteNode = (index, items) => {
         list: items
     }, () => {
         chrome.storage.local.get('list', function(data) {
-            console.log("value deleted", data.list)
+            console.log("New list : ", data.list)
         });
     });
 }
 
+// print items stored
 getItemStorage('list').then(item => {
     items = item
     CreateNode(item)
