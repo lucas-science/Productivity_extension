@@ -12,8 +12,8 @@ let items = []
 /* Listeners */
 newnode_box.style.display = "none"
 content.addEventListener('click', (e) => {
-    console.log(e.path[1].name)
-    if(!isNull(e.path[1].name)){
+    console.log(e)
+    if (!isNull(e.path[1].name)) {
         deleteNode(e.path[1].name, items)
     }
 })
@@ -52,7 +52,10 @@ const isNull = (val) => {
 const InsertAndGetItemsStorage = (node, name) => {
     return new Promise(function(resolv, reject) {
         chrome.storage.local.get(name, function(data) {
-            update(data.list, node);
+            let result = data.list.find(element => element.url === node.url)
+            if (isNull(result)) {
+                update(data.list, node);
+            }
         });
 
         function update(array, val) {
@@ -91,9 +94,13 @@ const CreateNode = (item) => {
         const div = document.createElement('div');
         div.className = "item"
         div.innerHTML = `
-            <p>${item[i].url}</p>
-            <p>${item[i].time}</p>
-            <button class="button-leave" value="${i}" name="${i}"><img class="trash" src="/baseline_delete_outline_white_24dp.png"></button>
+            <div class="top" >
+                <button class="button-leave" value="${i}" name="${i}"><img class="trash" src="/baseline_delete_outline_white_24dp.png"></button> 
+            </div>
+           <div class="bot" >
+                <div class="item-hour"><p>${item[i].time}</p><div class="circle"></div></div>
+                <p class="item-url">${item[i].url}</p>
+           </div>
         `;
         document.getElementById('content').appendChild(div);
     }
@@ -127,5 +134,3 @@ getItemStorage('list').then(item => {
     items = item
     CreateNode(item)
 })
-
-

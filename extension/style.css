@@ -1,21 +1,29 @@
 body {
-    width: 200px;
-    height: 350px;
+    width: 275px;
+    height: 400px;
     background-color: #041324;
     display: flex;
     flex-direction: column;
+    padding: 0px;
+    margin: 0;
+    align-items: center;
 }
-#new-node{
+
+#new-node {
     background-color: #184170;
     border: none;
     padding: 5px;
     border-radius: 5px;
     color: white;
     font-size: 13;
+    width: 75%;
+    margin-top: 7.5px;
 }
-#new-node:hover{
+
+#new-node:hover {
     cursor: pointer;
 }
+
 #newnode_box {
     display: none;
     background-color: #18417057;
@@ -23,50 +31,101 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    border: rgba(255, 255, 255, 0.281) solid 2.5px ;
+    border: rgba(255, 255, 255, 0.281) solid 2.5px;
     border-radius: 5px;
+    width: 85%;
+    margin-top: 7.5px;
 }
-.form{
+
+.form {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     justify-content: space-around;
     margin-bottom: 10px;
     height: 60px;
+    width: 90%;
 }
-#create-node{
+
+#create-node {
     background-color: #3B31B0;
     color: white;
     padding: 5px 10px;
     border: none;
     border-radius: 7.5px;
 }
-#create-node:hover{
+
+#create-node:hover {
     cursor: pointer;
 }
 
-.item{
-    background-color:#2c304153;
-    border: rgba(255, 255, 255, 0.281) solid 2.5px ;
+#content {
+    margin-bottom: 7.5px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.item {
+    background-color: #2c304153;
+    border: rgba(255, 255, 255, 0.281) solid 2.5px;
     border-radius: 5px;
     margin-top: 7.5px;
-    color:white;
+    color: white;
+    width: 90%;
 }
-.button-leave{
-    position: relative;
-    left: 170px;
-    bottom: 65px;
-    color:  white;
+
+.top {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.bot {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    height: 50px;
+    margin-top: -15px;
+    padding-left: 7.5px;
+    margin-bottom: 12.5px;
+}
+
+.circle {
+    background-color: crimson;
+    min-width: 6px;
+    min-height: 6px;
+    max-height: 6px;
+    border-radius: 50px;
+    margin-left: 7.5px;
+}
+
+.item-url {
+    margin: 0;
+}
+
+.item-hour {
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+.button-leave {
+    color: white;
     background-color: transparent;
     border: none;
     width: 25px;
-    height: 25px;
+    height: 20px;
     display: flex;
     justify-content: center;
+    position: relative;
+    z-index: 99999;
 }
-.button-leave:hover{
+
+.button-leave:hover {
     cursor: pointer;
 }
-.trash{
+
+.trash {
     height: 100%;
 }
