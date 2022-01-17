@@ -74,25 +74,38 @@ body {
     margin-top: 7.5px;
     color: white;
     width: 90%;
-}
-
-.top {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
 }
 
-.bot {
+.droit {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.gauche {
     display: flex;
     flex-direction: column;
     justify-content: space-around;
     height: 50px;
-    margin-top: -15px;
+    /*margin-top: -15px;*/
     padding-left: 7.5px;
     margin-bottom: 12.5px;
 }
 
-.circle {
+.circle-red {
     background-color: crimson;
+    min-width: 6px;
+    min-height: 6px;
+    max-height: 6px;
+    border-radius: 50px;
+    margin-left: 7.5px;
+}
+
+.circle-green {
+    background-color: rgb(21, 247, 0);
     min-width: 6px;
     min-height: 6px;
     max-height: 6px;
@@ -128,4 +141,14 @@ body {
 
 .trash {
     height: 100%;
+}
+
+.button-check {
+    margin-bottom: 5px;
+    background-color: cornflowerblue;
+    border-radius: 5px;
+}
+
+.button-check::after {
+    background-color: crimson;
 }

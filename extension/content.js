@@ -6,6 +6,7 @@
 // Description: Handles all the webpage level activities (e.g. manipulating page data, etc.)
 // License: MIT
 let isVisible = true
+let timerid
 
 /**
  * Get list of data stored in local storage
@@ -73,8 +74,10 @@ getItemStorage(['list', 'timeused']).then(async(val) => {
     console.log(domain)
     console.log(val)
 
-    let result = val.list.find(element => element.url == domain)
+    let result = val.list.find(element => element.url == domain && element.active == true)
     let result2 = val.timeused.find(element => element == domain.origin)
+
+    console.log(result)
 
     if (!isNull(result2)) {
         window.location.replace("http://www.w3schools.com");
@@ -87,7 +90,7 @@ getItemStorage(['list', 'timeused']).then(async(val) => {
         let converted_time = (hour * 3600 + minute * 60) * 1000
         console.log(converted_time / 1000)
         let i = 0
-        setInterval(() => {
+        timerid = setInterval(() => {
             if (isVisible) {
                 i++
                 console.log(i)
@@ -116,6 +119,41 @@ document.addEventListener('visibilitychange', function(event) {
  */
 chrome.storage.onChanged.addListener(function(changes, namespace) {
     console.log(changes.list.newValue)
+    getItemStorage(['list', 'timeused']).then(async(val) => {
+        let url = window.location.href;
+        let domain = new URL(url);
+        console.log(domain)
+        console.log(val)
+
+        let result = val.list.find(element => element.url == domain && element.active == true)
+        let result2 = val.timeused.find(element => element == domain.origin)
+
+        console.log(result)
+        if (isNull(result)) {
+            clearInterval(timerid); // break the old timer
+        }
+        if (!isNull(result2)) {
+            window.location.replace("http://www.w3schools.com");
+        }
+        if (!isNull(result)) {
+            time = result.time.split('h').map(Number)
+            let hour = time[0]
+            let minute = time[1]
+            let converted_time = (hour * 3600 + minute * 60) * 1000
+            console.log(converted_time / 1000)
+            let i = 0
+            timerid = setInterval(() => {
+                if (isVisible) {
+                    i++
+                    console.log(i)
+                }
+                if (i == (converted_time / 1000)) {
+                    window.location.replace("http://www.w3schools.com");
+                    addTimeUsed(domain)
+                }
+            }, 1000)
+        }
+    })
 });
 
 /**

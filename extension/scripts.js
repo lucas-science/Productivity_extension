@@ -11,9 +11,17 @@ let items = []
 
 /* Listeners */
 newnode_box.style.display = "none"
-content.addEventListener('click', (e) => {
+content.addEventListener('click', async(e) => {
     console.log(e)
-    if (!isNull(e.path[1].name)) {
+    let isButtonCheck = e.path.find(el => el.className == "button-check")
+    if (isButtonCheck) {
+        let data = await getItemStorage('list')
+        let bool = data.list[isButtonCheck.name].active
+        data.list[isButtonCheck.name].active = !bool
+        test = ChangeAllStorageList(data.list)
+        e.path[isButtonCheck].checked = true
+    }
+    if (e.path[1].name) {
         deleteNode(e.path[1].name, items)
     }
 })
@@ -26,7 +34,8 @@ NewNodeButton.addEventListener('click', () => {
 CreateNodeButton.addEventListener('click', () => {
     let node = {
         url: form_url.value,
-        time: form_time.value
+        time: form_time.value,
+        active: true
     }
     form_url.value = ""
     form_time.value = 0
@@ -52,7 +61,7 @@ const isNull = (val) => {
 const InsertAndGetItemsStorage = (node, name) => {
     return new Promise(function(resolv, reject) {
         chrome.storage.local.get(name, function(data) {
-            let result = data.list.find(element => element.url === node.url)
+            let result = data.list.find(element => element.url === node.url) // verify if element alright exist
             if (isNull(result)) {
                 update(data.list, node);
             }
@@ -65,9 +74,27 @@ const InsertAndGetItemsStorage = (node, name) => {
             }, async() => {
                 console.log("added to list with new values");
                 let data = await getItemStorage('list')
-                resolv(data)
+                console.log(data.list)
+                resolv(data.list)
             });
         }
+    });
+}
+
+/**
+ * Delete all old value and set new one, to add activate changement
+ * @param {Object} data 
+ * @returns 
+ */
+const ChangeAllStorageList = (data) => {
+    return new Promise(function(resolv, reject) {
+        chrome.storage.local.set({
+            list: data
+        }, async() => {
+            let data = await getItemStorage('list')
+            console.log(data.list)
+            resolv(data.list)
+        });
     });
 }
 
@@ -79,7 +106,7 @@ const InsertAndGetItemsStorage = (node, name) => {
 const getItemStorage = (name) => {
     return new Promise(function(resolv, reject) {
         chrome.storage.local.get(name, function(data) {
-            resolv(data.list)
+            resolv(data)
         });
     })
 }
@@ -93,15 +120,30 @@ const CreateNode = (item) => {
     for (let i in item) {
         const div = document.createElement('div');
         div.className = "item"
-        div.innerHTML = `
-            <div class="top" >
-                <button class="button-leave" value="${i}" name="${i}"><img class="trash" src="/baseline_delete_outline_white_24dp.png"></button> 
-            </div>
-           <div class="bot" >
-                <div class="item-hour"><p>${item[i].time}</p><div class="circle"></div></div>
+        if (item[i].active) {
+            div.innerHTML = `
+           <div class="gauche" >
+                <div class="item-hour"><p>${item[i].time}</p><div class="circle-green"></div></div>
                 <p class="item-url">${item[i].url}</p>
            </div>
+           <div class="droit" >
+                <button class="button-leave" value="${i}" name="${i}"><img class="trash" src="/baseline_delete_outline_white_24dp.png"></button> 
+                <input class="button-check" name="${i}" type="radio">
+            </div>
         `;
+        } else {
+            div.innerHTML = `
+           <div class="gauche" >
+                <div class="item-hour"><p>${item[i].time}</p><div class="circle-red"></div></div>
+                <p class="item-url">${item[i].url}</p>
+           </div>
+           <div class="droit" >
+                <button class="button-leave" value="${i}" name="${i}"><img class="trash" src="/baseline_delete_outline_white_24dp.png"></button> 
+                <input class="button-check" name="${i}" type="radio">
+            </div>
+        `;
+        }
+
         document.getElementById('content').appendChild(div);
     }
 }
@@ -131,6 +173,6 @@ chrome.storage.local.get('list', function(result) {
 });
 // print items stored
 getItemStorage('list').then(item => {
-    items = item
-    CreateNode(item)
+    items = item.list
+    CreateNode(items)
 })
