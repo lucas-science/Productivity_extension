@@ -1,4 +1,4 @@
-const message = document.getElementById('message');
+/*const message = document.getElementById('message');
 const gif = document.getElementById('gif')
 const domain_text = document.getElementById('domain')
 
@@ -9,7 +9,7 @@ let paramRaw = domain.pathname
 let param = paramRaw.substring(1, paramRaw.length)
 
 
-domain_text.innerHTML = param
+domain_text.innerHTML = param*/
 const listGIPH = [
     "https://giphy.com/embed/M95p3ePQqqpQsuu73m",
     "https://giphy.com/embed/BppJuhtpnIdeCtR4VB",
