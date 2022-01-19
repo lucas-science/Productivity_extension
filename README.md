@@ -5,6 +5,8 @@
 This extension is usefull to stop procrastination. The goal is to stop wasting time on non-productive applications.
 So the extension sees when you are in a website where you had put a time restriction, so it will let the time you can stay in that application, after the allowed time, you will be redirected to another page, so you can't go back to the non-productive application.
 
+The page where users are redirected : [link](https://productivity-extension.vercel.app/)
+
 ## How use the extension 
 
 - Step 1 :
