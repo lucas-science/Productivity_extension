@@ -7,6 +7,7 @@
 // License: MIT
 let isVisible = true
 let timerid
+let y
 
 /**
  * Get list of data stored in local storage
@@ -65,6 +66,16 @@ const SetDataTimeStamp = (data) => {
     })
 }
 
+const ifChangementActiveItems = () => {
+    let result = val.list.find(element => element.url == domain.origin && element.active == true)
+    let result2 = val.timeused.find(element => element == domain.origin)
+
+    if (isNull(result)) {
+        console.log("test", y, result)
+        clearInterval(timerid); // break the old timer
+    }
+}
+
 /**
  * get back data of list of website with restriction and timeUsed website
  */
@@ -74,13 +85,11 @@ getItemStorage(['list', 'timeused']).then(async(val) => {
     console.log(domain)
     console.log(val)
 
-    let result = val.list.find(element => element.url == domain && element.active == true)
+    let result = val.list.find(element => element.url == domain.origin && element.active == true)
     let result2 = val.timeused.find(element => element == domain.origin)
 
-    console.log(result)
-
     if (!isNull(result2)) {
-        window.location.replace("http://www.w3schools.com");
+        window.location.replace("https://productivity-extension.vercel.app/");
     }
 
     if (!isNull(result)) {
@@ -88,18 +97,25 @@ getItemStorage(['list', 'timeused']).then(async(val) => {
         let hour = time[0]
         let minute = time[1]
         let converted_time = (hour * 3600 + minute * 60) * 1000
-        console.log(converted_time / 1000)
-        let i = 0
-        timerid = setInterval(() => {
-            if (isVisible) {
-                i++
-                console.log(i)
-            }
-            if (i == (converted_time / 1000)) {
-                window.location.replace("http://www.w3schools.com");
-                addTimeUsed(domain)
-            }
-        }, 1000)
+        console.log("remaining time : " + converted_time / 1000)
+        if (isNaN(y)) {
+            y = 0
+        }
+        if (converted_time == 0) {
+            window.location.replace("https://productivity-extension.vercel.app/");
+        } else {
+            timerid = setInterval(() => {
+                if (isVisible) {
+                    y++
+                    console.log(y)
+                    ifChangementActiveItems()
+                }
+                if (y == (converted_time / 1000)) {
+                    window.location.replace("https://productivity-extension.vercel.app/");
+                    addTimeUsed(domain)
+                }
+            }, 1000)
+        }
     }
 })
 
@@ -118,40 +134,48 @@ document.addEventListener('visibilitychange', function(event) {
  * if restriction website list changed
  */
 chrome.storage.onChanged.addListener(function(changes, namespace) {
-    console.log(changes.list.newValue)
+    console.log("changements : ", changes.list.newValue)
     getItemStorage(['list', 'timeused']).then(async(val) => {
         let url = window.location.href;
         let domain = new URL(url);
-        console.log(domain)
-        console.log(val)
+        /*console.log(domain)
+        console.log(val)*/
 
-        let result = val.list.find(element => element.url == domain && element.active == true)
+        let result = val.list.find(element => element.url == domain.origin && element.active == true)
         let result2 = val.timeused.find(element => element == domain.origin)
 
-        console.log(result)
+        //console.log(result)
         if (isNull(result)) {
+            console.log("test", y, result)
             clearInterval(timerid); // break the old timer
         }
         if (!isNull(result2)) {
-            window.location.replace("http://www.w3schools.com");
+            window.location.replace("https://productivity-extension.vercel.app/");
         }
         if (!isNull(result)) {
             time = result.time.split('h').map(Number)
             let hour = time[0]
             let minute = time[1]
             let converted_time = (hour * 3600 + minute * 60) * 1000
-            console.log(converted_time / 1000)
-            let i = 0
-            timerid = setInterval(() => {
-                if (isVisible) {
-                    i++
-                    console.log(i)
-                }
-                if (i == (converted_time / 1000)) {
-                    window.location.replace("http://www.w3schools.com");
-                    addTimeUsed(domain)
-                }
-            }, 1000)
+            console.log("remaining time : " + converted_time / 1000)
+            if (isNaN(y)) {
+                y = 0
+            }
+            if (converted_time == 0) {
+                window.location.replace("https://productivity-extension.vercel.app/");
+            } else {
+                timerid = setInterval(() => {
+                    if (isVisible) {
+                        y++
+                        console.log(y)
+                        ifChangementActiveItems()
+                    }
+                    if (y == (converted_time / 1000)) {
+                        window.location.replace("https://productivity-extension.vercel.app/");
+                        addTimeUsed(domain)
+                    }
+                }, 1000)
+            }
         }
     })
 });

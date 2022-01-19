@@ -32,26 +32,44 @@ NewNodeButton.addEventListener('click', () => {
 })
 
 CreateNodeButton.addEventListener('click', () => {
-    let node = {
-        url: form_url.value,
-        time: form_time.value,
-        active: true
+    let pattern = /^https:\/\//i;
+    if (pattern.test(form_url.value)) { // verify is url gived is an url
+        let url = new URL(form_url.value)
+        console.log(url)
+        console.log("dzad", form_time.value)
+        let node = {
+            url: url.origin,
+            time: form_time.value,
+            active: true
+        }
+        form_url.value = ""
+        newnode_box.style.display = "none"
+        NewNodeButton.style.display = "block"
+        InsertAndGetItemsStorage(node, 'list')
+    } else { // if its not an url
+        form_url.value = ""
+        newnode_box.style.display = "none"
+        NewNodeButton.style.display = "block"
     }
-    form_url.value = ""
-    form_time.value = 0
-    newnode_box.style.display = "none"
-    NewNodeButton.style.display = "block"
-    InsertAndGetItemsStorage(node, 'list')
 })
 
+/**
+ * if list change add new items
+ */
 chrome.storage.onChanged.addListener(function(changes, namespace) {
     items = changes.list.newValue
     CreateNode(items) // print modifications
 });
 
+/**
+ * return if a value is Null or not
+ * @param {*} val 
+ * @returns 
+ */
 const isNull = (val) => {
     return val == null ? true : false
 }
+
 
 /**
  * Insert Data in local storage
@@ -171,6 +189,7 @@ chrome.storage.local.get('list', function(result) {
         })
     }
 });
+
 // print items stored
 getItemStorage('list').then(item => {
     items = item.list
