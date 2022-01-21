@@ -105,14 +105,14 @@ getItemStorage(['list', 'timeused']).then(async(val) => {
             window.location.replace("https://productivity-extension.vercel.app/");
         } else {
             timerid = setInterval(() => {
+                if (y == (converted_time / 1000)) {
+                    window.location.replace("https://productivity-extension.vercel.app/");
+                    addTimeUsed(domain)
+                }
                 if (isVisible) {
                     y++
                     console.log(y)
                     ifChangementActiveItems()
-                }
-                if (y == (converted_time / 1000)) {
-                    window.location.replace("https://productivity-extension.vercel.app/");
-                    addTimeUsed(domain)
                 }
             }, 1000)
         }
@@ -165,14 +165,14 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
                 window.location.replace("https://productivity-extension.vercel.app/");
             } else {
                 timerid = setInterval(() => {
+                    if (y == (converted_time / 1000)) {
+                        window.location.replace("https://productivity-extension.vercel.app/");
+                        addTimeUsed(domain)
+                    }
                     if (isVisible) {
                         y++
                         console.log(y)
                         ifChangementActiveItems()
-                    }
-                    if (y == (converted_time / 1000)) {
-                        window.location.replace("https://productivity-extension.vercel.app/");
-                        addTimeUsed(domain)
                     }
                 }, 1000)
             }
