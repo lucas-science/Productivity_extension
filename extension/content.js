@@ -66,7 +66,7 @@ const SetDataTimeStamp = (data) => {
     })
 }
 
-const ifChangementActiveItems = () => {
+const ifChangementActiveItems = (val) => {
     let result = val.list.find(element => element.url == domain.origin && element.active == true)
     let result2 = val.timeused.find(element => element == domain.origin)
 
@@ -87,6 +87,7 @@ getItemStorage(['list', 'timeused']).then(async(val) => {
 
     let result = val.list.find(element => element.url == domain.origin && element.active == true)
     let result2 = val.timeused.find(element => element == domain.origin)
+    console.log("lol", result2, result)
 
     if (!isNull(result2)) {
         window.location.replace("https://productivity-extension.vercel.app/");
@@ -103,6 +104,7 @@ getItemStorage(['list', 'timeused']).then(async(val) => {
         }
         if (converted_time == 0) {
             window.location.replace("https://productivity-extension.vercel.app/");
+            addTimeUsed(domain)
         } else {
             timerid = setInterval(() => {
                 if (y == (converted_time / 1000)) {
@@ -112,7 +114,7 @@ getItemStorage(['list', 'timeused']).then(async(val) => {
                 if (isVisible) {
                     y++
                     console.log(y)
-                    ifChangementActiveItems()
+                    ifChangementActiveItems(val)
                 }
             }, 1000)
         }
@@ -163,6 +165,7 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
             }
             if (converted_time == 0) {
                 window.location.replace("https://productivity-extension.vercel.app/");
+                addTimeUsed(domain)
             } else {
                 timerid = setInterval(() => {
                     if (y == (converted_time / 1000)) {

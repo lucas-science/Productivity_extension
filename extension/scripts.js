@@ -22,6 +22,19 @@ content.addEventListener('click', async(e) => {
         e.path[isButtonCheck].checked = true
     }
     if (e.path[1].name) {
+        console.log(items[e.path[1].name].url)
+
+        // verfi if domain name which gonna be delete is in TimeUsed or not
+        let data = await getItemStorage('timeused')
+        let res = data.timeused.find(el => el == items[e.path[1].name].url)
+        console.log("la", res)
+        if (res) {
+            console.log("before", data.timeused)
+            let indextimeused = data.timeused.indexOf(items[e.path[1].name].url)
+            data.timeused.splice(indextimeused, 1)
+            console.log("after", data.timeused)
+            insertTimeUsed(data.timeused)
+        }
         deleteNode(e.path[1].name, items)
     }
 })
@@ -171,7 +184,7 @@ const CreateNode = (item) => {
  * @param {*} index 
  * @param {*} items 
  */
-const deleteNode = (index, items) => {
+const deleteNode = async(index, items) => {
     items.splice(index, 1)
     chrome.storage.local.set({
         list: items
@@ -181,6 +194,17 @@ const deleteNode = (index, items) => {
         });
     });
 }
+
+const insertTimeUsed = async(data) => {
+    chrome.storage.local.set({
+        timeused: data
+    }, () => {
+        chrome.storage.local.get('timeused', function(data) {
+            console.log("New timeused : ", data.list)
+        });
+    });
+}
+
 chrome.storage.local.get('list', function(result) {
     console.log(result)
     if (Object.entries(result).length === 0) {
